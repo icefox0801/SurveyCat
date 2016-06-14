@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+var Liftoff = require('liftoff');
+var cli = require('../lib/cli');
+
+var surveyCat = new Liftoff({
+  name: 'surveyCat',
+  processTitle: 'surveyCat',
+  moduleName: 'surveyCat'
+});
+
+surveyCat.launch({}, function (env) {
+  cli.run(env);
+});
