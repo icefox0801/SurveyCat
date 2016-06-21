@@ -13,7 +13,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var Server = function (config) {
-  this.cofig = _.assign({}, Server.defaults, config);
+  this.config = _.assign({}, Server.defaults, config);
   this.app = express();
 };
 
@@ -28,11 +28,13 @@ Server.prototype = {
   constructor: Server,
   initialize: function () {
     var self = this;
-    var routes = require('./routes/index');
+    var home = require('./routes/index');
     var users = require('./routes/users');
+    var config = require('./routes/config');
     // view engine setup
     self.app.set('views', path.join(__dirname, 'views'));
-    self.app.set('view engine', 'ejs');
+    self.app.engine('html', require('ejs').renderFile);
+    self.app.set('view engine', 'html');
     // uncomment after placing your favicon in /public
     //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
     self.app.use(logger('dev'));
@@ -40,8 +42,13 @@ Server.prototype = {
     self.app.use(bodyParser.urlencoded({ extended: false }));
     self.app.use(cookieParser());
     self.app.use(express.static(path.join(__dirname, 'public')));
-    self.app.use('/', routes);
+    self.app.use(function (req, res, next) {
+      req.surveycat = self.config;
+      next();
+    });
+    self.app.use('/', home);
     self.app.use('/users', users);
+    self.app.use('/config', config);
     // catch 404 and forward to error handler
     self.app.use(function(req, res, next) {
       var err = new Error('Not Found');
@@ -94,16 +101,16 @@ Server.prototype = {
 
       // handle specific listen errors with friendly messages
       switch (error.code) {
-        case 'EACCES':
-          console.error(bind + ' requires elevated privileges');
-          process.exit(1);
-          break;
-        case 'EADDRINUSE':
-          console.error(bind + ' is already in use');
-          process.exit(1);
-          break;
-        default:
-          throw error;
+      case 'EACCES':
+        console.error(bind + ' requires elevated privileges');
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(bind + ' is already in use');
+        process.exit(1);
+        break;
+      default:
+        throw error;
       }
     }
 
@@ -117,3 +124,5 @@ Server.prototype = {
 
   }
 };
+
+module.exports = Server;

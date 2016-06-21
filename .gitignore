@@ -34,3 +34,8 @@ node_modules
 
 # WebStorm config
 .idea
+
+# meterialize-css static directory
+server/public/materialize-css
+server/public/vue
+server/public/jquery
