@@ -2,11 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><%= title %></title>
+    <title><%= surveycat.title %></title>
     <link rel="stylesheet" href="/materialize-css/css/materialize.min.css" />
-    <script type="text/javascript" src="/materialize-css/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/fullpage.js/jquery.fullPage.css" />
+    <link rel="stylesheet" href="/stylesheets/index.css" />
 </head>
 <body>
-<p>yes, my lord!</p>
+<div id="app">
+    <% function toChoice (value) {
+    return String.fromCharCode(value + 65);
+    } %>
+    <div class="navbar-fixed">
+        <nav class="teal nav-progress">
+            <div class="nav-wrapper">
+                <div class="row">
+                    <div class="col s2">
+                        <a class="right indicator" href="javascript:void(0);">Progress: {{ answeredNum }}/<%= questionList.length %></a>
+                    </div>
+                    <div class="col s10">
+                        <div class="progress">
+                            <div class="determinate orange" style="width: {{ percentage }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <section class="container" id="fullPage">
+        <div class="section page">
+            <h1><%= surveycat.title %></h1>
+            <p class="flow-text"><%- surveycat.description %></p>
+            <a href="#1" class="waves-effect waves-light btn btn-large">START</a>
+        </div>
+        <% questionList.forEach(function (question, index) { %>
+        <% var order = index + 1; %>
+        <div class="section page question">
+            <div class="card-panel">
+                <div class="row">
+                    <div class="col s12">
+                        <h5>
+                            <span><%= order %>. <%= question.prompt %></span>
+                        </h5>
+                    </div>
+                </div>
+                <% switch(question.type) {
+                case 'input': %>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="q<%= order %>" type="text" class="validate" length="400" maxlength="400" placeholder="answer" name="q<%= order %>" v-model="question.answer" />
+                        <label for="q<%= order %>" class="active">answer: </label>
+                    </div>
+                </div>
+                <% break; %>
+                <% case 'textarea': %>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="q<%= order %>" class="materialize-textarea" length="400" maxlength="400" placeholder="answer" name="q<%= order %>" v-model=question.answer" ></textarea>
+                        <label for="q<%= order %>" class="active">answer: </label>
+                    </div>
+                </div>
+                <% break; %>
+                <% case 'checkbox': %>
+                <div>
+                    <% question.choices.forEach(function (choice, cindex) { %>
+                    <p>
+                        <input type="checkbox" id="q<%= order %>-c<%= toChoice(cindex) %>" name="q<%= order %>" value="<%= toChoice(cindex) %>" v-model="question.checked" />
+                        <label for="q<%= order %>-c<%= toChoice(cindex) %>"><%= toChoice(cindex) %>. <%= choice.text %></label>
+                    </p>
+                    <% }) %>
+                </div>
+                <% break; %>
+                <% case 'radio': %>
+                <div>
+                    <% question.choices.forEach(function (choice, cindex) { %>
+                    <p>
+                        <input type="radio" id="q<%= order %>-c<%= toChoice(cindex) %>" name="q<%= order %>" value="<%= toChoice(cindex) %>" v-model="question.checked" />
+                        <label for="q<%= order %>-c<%= toChoice(cindex) %>"><%= toChoice(cindex) %>. <%= choice.text %></label>
+                    </p>
+                    <% }) %>
+                </div>
+                <% break; %>
+                <% default: %>
+                <% break; %>
+                <% } %>
+                <div class="row">
+                    <div class="divider"></div>
+                    <br>
+                    <div class="col s12">
+                        <% if(order > 1) { %>
+                        <a class="waves-effect waves-light btn" href="#<%= order - 1 %>">
+                            <i class="material-icons left">arrow_back</i>
+                            <span class="btn-text-fix">PREV</span>
+                        </a>
+                        <% } %>
+                        <% if(order < questionList.length) { %>
+                        <a class="waves-effect waves-light btn" href="#<%= order + 1 %>">
+                            <i class="material-icons right">arrow_forward</i>
+                            <span class="btn-text-fix">NEXT</span>
+                        </a>
+                        <% } %>
+                        <% if(order === questionList.length) { %>
+                        <button class="waves-effect waves-light btn" type="button">
+                            <i class="material-icons right">check</i>
+                            <span class="btn-text-fix">FINISH</span>
+                        </button>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="q<%= index%>-json" value="<%= JSON.stringify(question) %>"/>
+        </div>
+        <% }); %>
+    </section>
+</div>
+<script type="text/javascript" src="/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/materialize-css/js/materialize.min.js"></script>
+<script type="text/javascript" src="/vue/vue.min.js"></script>
+<script type="text/javascript" src="/fullpage.js/jquery.fullPage.js"></script>
+<script type="text/javascript" src="/javascripts/index.js"></script>
 </body>
 </html>

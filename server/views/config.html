@@ -11,10 +11,8 @@
 <section class="container" id="app">
     <h1><%= surveycat.title %></h1>
     <p class="flow-text">Configure questions of survey:</p>
-    <div>
-        <template v-for="(index, question) in questionList" class="section">
-            <question :question="question" :order="index + 1"></question>
-        </template>
+    <div v-for="(index, question) in questionList" class="section">
+        <question :question="question" :order="index + 1"></question>
     </div>
     <new-question :question="newQuestion" :order.sync="questionList.length + 1" v-el:form></new-question>
     <br>
@@ -85,13 +83,13 @@
     </div>
     <div v-if="question.type === 'checkbox'">
         <p v-for="(cindex, choice) in question.choices">
-            <input type="checkbox" id="q{{ order }}-c{{ cindex | choice }}" name="q{{ order }}"/>
+            <input type="checkbox" id="q{{ order }}-c{{ cindex | choice }}" name="q{{ order }}" value="{{ cindex | choice }}"/>
             <label for="q{{ order }}-c{{ cindex | choice }}">{{ cindex | choice }}. {{ choice.text }}</label>
         </p>
     </div>
     <div v-if="question.type === 'radio'">
         <p v-for="(cindex, choice) in question.choices">
-            <input type="radio" id="q{{ order }}-c{{ cindex | choice }}" name="q{{ order }}"/>
+            <input type="radio" id="q{{ order }}-c{{ cindex | choice }}" name="q{{ order }}" value="{{ cindex | choice }}"/>
             <label for="q{{ order }}-c{{ cindex | choice }}">{{ cindex | choice }}. {{ choice.text }}</label>
         </p>
     </div>
@@ -101,10 +99,10 @@
 <script type="x-template" id="new-question">
 <div class="card-panel">
     <partial name="edit-question"></partial>
-    <form action="" method="POST" >
+    <form action="" method="POST" v-on:submit="submitQuestions" >
         <input type="hidden" name="questions" id="questions" />
         <button class="waves-effect waves-light btn" v-on:click="addQuestion" type="button">Add</button>
-        <button class="waves-effect waves-light btn" v-on:click="submitQuestions" type="submit">Submit</button>
+        <button class="waves-effect waves-light btn" type="submit">Submit</button>
     </form>
 </div>
 </script>

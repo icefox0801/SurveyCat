@@ -143,12 +143,12 @@ var mixin = {
 
       }
 
-      self.$dispatch('question-add', questionToAdd);
+      self.$dispatch('add', questionToAdd);
       self.reset();
     },
     deleteQuestion: function () {
       var self = this;
-      self.$dispatch('question-delete', self.order);
+      self.$dispatch('delete', self.order);
     },
     reset: function () {
       var self = this;
@@ -163,6 +163,10 @@ var mixin = {
           self.$set('question.type', value);
         });
       });
+    },
+    submitQuestions: function () {
+      var self = this;
+      self.$dispatch('submit');
     }
   }
 };
@@ -208,19 +212,17 @@ var vm = new Vue({
     }
   },
   events: {
-    'question-delete': function (order) {
+    'delete': function (order) {
       var self = this;
       self.questionList.splice(order - 1, 1);
       questionStorage.save(self.questionList);
     },
-    'question-add': function (question) {
+    'add': function (question) {
       var self = this;
       self.questionList.push(question);
       questionStorage.save(self.questionList);
-    }
-  },
-  methods: {
-    submitQuestions: function () {
+    },
+    'submit': function () {
       var self = this;
       var questions = JSON.stringify(self.questionList);
       $('#questions').val(questions);

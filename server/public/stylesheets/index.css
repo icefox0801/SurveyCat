@@ -1,0 +1,9 @@
+.nav-progress .progress {
+    margin-top: 1.8rem;
+    height: 6px;
+}
+
+.btn-text-fix {
+    position: relative;
+    top: 1px;
+}

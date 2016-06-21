@@ -3,14 +3,15 @@
 var path = require('path');
 var http = require('http');
 
-var debug = require('debug')('server:server');
-
 var _ = require('lodash');
 var express = require('express');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var Promise = require('bluebird');
+
+var logger = require('../lib/util/logger');
 
 var Server = function (config) {
   this.config = _.assign({}, Server.defaults, config);
@@ -36,8 +37,8 @@ Server.prototype = {
     self.app.engine('html', require('ejs').renderFile);
     self.app.set('view engine', 'html');
     // uncomment after placing your favicon in /public
-    //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-    self.app.use(logger('dev'));
+    self.app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+    self.app.use(morgan('dev'));
     self.app.use(bodyParser.json());
     self.app.use(bodyParser.urlencoded({ extended: false }));
     self.app.use(cookieParser());
@@ -59,21 +60,21 @@ Server.prototype = {
     // development error handler
     // will print stacktrace
     if (self.app.get('env') === 'development') {
-      self.app.use(function(err, req, res, next) {
+      self.app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
           message: err.message,
-          error: err
+          stack: err.stack
         });
       });
     }
     // production error handler
     // no stacktraces leaked to user
-    self.app.use(function(err, req, res, next) {
+    self.app.use(function (err, req, res, next) {
       res.status(err.status || 500);
       res.render('error', {
         message: err.message,
-        error: {}
+        stack: err.stack
       });
     });
 
@@ -86,41 +87,44 @@ Server.prototype = {
 
     var server = http.createServer(self.app);
 
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening);
+    return new Promise(function (resolve, reject) {
+      server.listen(port);
 
-    function onError(error) {
-      if (error.syscall !== 'listen') {
-        throw error;
-      }
+      server.on('listening', function () {
+        var addr = server.address();
+        var bind = typeof addr === 'string'
+          ? 'pipe ' + addr
+          : 'port ' + addr.port;
+        logger.info('Listening on ' + bind);
+        resolve(self);
+      });
 
-      var bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
+      server.on('error', function (error) {
 
-      // handle specific listen errors with friendly messages
-      switch (error.code) {
-      case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
-        process.exit(1);
-        break;
-      default:
-        throw error;
-      }
-    }
+        if (error.syscall !== 'listen') {
+          throw error;
+        }
 
-    function onListening() {
-      var addr = server.address();
-      var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-      debug('Listening on ' + bind);
-    }
+        var bind = typeof port === 'string'
+          ? 'Pipe ' + port
+          : 'Port ' + port;
+
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+        case 'EACCES':
+          logger.error(bind + ' requires elevated privileges');
+          process.exit(1);
+          break;
+        case 'EADDRINUSE':
+          logger.error(bind + ' is already in use');
+          process.exit(1);
+          break;
+        default:
+          throw error;
+        }
+
+      });
+    });
 
   }
 };
