@@ -28,6 +28,9 @@ var questionStorage = {
 
 var mixin = {
   props: [ 'question', 'order' ],
+  data: {
+    'edit': false
+  },
   created: function () {
     var self = this;
 
@@ -49,7 +52,7 @@ var mixin = {
     });
   },
   watch: {
-    'question.edit': 'toggleEdit'
+    'edit': 'toggleEdit'
   },
   computed: {
     'hasChoices': function () {
@@ -224,8 +227,19 @@ var vm = new Vue({
     },
     'submit': function () {
       var self = this;
-      var questions = JSON.stringify(self.questionList);
-      $('#questions').val(questions);
+      var questions = self.questionList.map(function (question, index) {
+        var obj = {};
+        obj.order = index + 1;
+        obj.prompt = question.prompt;
+        obj.type = question.type;
+
+        if (question.type === 'checkbox' || question.type === 'radio') {
+          obj.choices = question.choices;
+        }
+
+        return obj;
+      });
+      $('#questions').val(JSON.stringify(questions));
       return true;
     }
   }

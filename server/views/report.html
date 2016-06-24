@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report of survey: <%= surveycat.title %></title>
+    <link rel="stylesheet" href="/materialize-css/css/materialize.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/fullpage.js/jquery.fullPage.css" />
+    <link rel="stylesheet" href="/stylesheets/index.css" />
+    <style>
+        .choice-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <% function toChoice (value) {
+    return String.fromCharCode(value + 65);
+    } %>
+    <section class="container">
+        <div class="section page">
+            <h1><%= surveycat.title %></h1>
+            <p class="flow-text">Report of survey: <%= surveycat.title %></p>
+        </div>
+        <% statistics.forEach(function (question, index) { %>
+        <% var order = index + 1; %>
+        <div class="section page question">
+            <div class="card-panel">
+                <div class="row">
+                    <div class="col s12">
+                        <h5>
+                            <span><%= order %>. <%= question.prompt %></span>
+                        </h5>
+                    </div>
+                </div>
+                <% switch(question.type) {
+                case 'input': %>
+                <% case 'textarea': %>
+                <ul class="answers" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header">共<%= question.answers.length %>个回答（点击展开）：</div>
+                        <div class="collapsible-body" style="padding: 0 1rem;">
+                            <% question.answers.forEach(function (answer, index) { %>
+                            <% if(index !== 0) { %>
+                            <div class="divider"></div>
+                            <% } %>
+                            <div class="section teal-text">
+                                <span><%= index + 1 %>. <%= answer %></span>
+                            </div>
+
+                            <% }) %>
+                        </div>
+                    </li>
+                </ul>
+                <% break; %>
+                <% case 'checkbox': %>
+                <% case 'radio': %>
+                <div>
+                    <% question.choices.forEach(function (choice, cindex) { %>
+                    <% var total = question.choices.reduce(function (sum, choice) {
+                        return sum + choice.count;
+                    }, 0); %>
+                    <% var percentage = choice.count / total * 100; %>
+                    <div class="row">
+                        <div class="col s2 choice-text">
+                            <a class="tooltipped teal-text" data-position="top" data-delay="50" data-tooltip="<%= choice.text %>" href="javascript:void(0);"><%= toChoice(cindex) %>. <%= choice.text %></a>
+                        </div>
+                        <div class="col s8">
+                            <div class="progress">
+                                <div class="determinate blue lighten-1" style="width: <%= percentage %>%"></div>
+                            </div>
+                        </div>
+                        <div class="col s2">
+                            <span><%= choice.count %> (<%= percentage %>%)</span>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <% break; %>
+                <% default: %>
+                <% break; %>
+                <% } %>
+            </div>
+        </div>
+        <% }); %>
+    </section>
+    <input id="type" type="hidden" name="type" value="<%= surveycat.type %>" />
+</div>
+<script type="text/javascript" src="/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/materialize-css/js/materialize.min.js"></script>
+<script type="text/javascript" src="/vue/vue.min.js"></script>
+<script type="text/javascript" src="/javascripts/report.js"></script>
+</body>
+</html>

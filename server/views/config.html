@@ -60,14 +60,14 @@
             <div class="switch section right">
                 <label>
                     <span>Preview</span>
-                    <input type="checkbox" v-model="question.edit">
+                    <input type="checkbox" v-model="edit">
                     <span class="lever"></span>
                     <span>Edit</span>
                 </label>
             </div>
         </div>
     </div>
-    <partial name="edit-question" v-if="question.edit"></partial>
+    <partial name="edit-question" v-if="edit"></partial>
     <template v-else>
     <div class="row" v-if="question.type === 'input'">
         <div class="input-field col s12">

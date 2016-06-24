@@ -3,6 +3,7 @@
 var path = require('path');
 
 var fs =  require('graceful-fs');
+var DataStore = require('nedb');
 var YAML = require('yamljs');
 var express = require('express');
 var router = express.Router();
@@ -21,6 +22,26 @@ router.get('/', function (req, res) {
     questionList: questions
   });
 
+});
+
+/* POST config page */
+router.post('/', function (req, res) {
+  var db = new DataStore({
+    filename: path.join(req.surveycat.dir, 'datafile'),
+    autoload: true
+  });
+  var questions = JSON.parse(req.body.questions);
+  db.insert({
+    answers: questions,
+    createAt: new Date()
+  }, function (err, newDocs) {
+
+    if (err) {
+      throw err;
+    }
+
+    res.render('success');
+  });
 });
 
 module.exports = router;

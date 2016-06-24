@@ -30,8 +30,8 @@ Server.prototype = {
   initialize: function () {
     var self = this;
     var home = require('./routes/index');
-    var users = require('./routes/users');
     var config = require('./routes/config');
+    var report = require('./routes/report');
     // view engine setup
     self.app.set('views', path.join(__dirname, 'views'));
     self.app.engine('html', require('ejs').renderFile);
@@ -48,8 +48,8 @@ Server.prototype = {
       next();
     });
     self.app.use('/', home);
-    self.app.use('/users', users);
     self.app.use('/config', config);
+    self.app.use('/report', report);
     // catch 404 and forward to error handler
     self.app.use(function(req, res, next) {
       var err = new Error('Not Found');
@@ -117,6 +117,7 @@ Server.prototype = {
           break;
         case 'EADDRINUSE':
           logger.error(bind + ' is already in use');
+          resolve(self);
           process.exit(1);
           break;
         default:

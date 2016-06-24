@@ -13,6 +13,7 @@
     <% function toChoice (value) {
     return String.fromCharCode(value + 65);
     } %>
+    <% if(surveycat.type === 'carousel') { %>
     <div class="navbar-fixed">
         <nav class="teal nav-progress">
             <div class="nav-wrapper">
@@ -29,11 +30,14 @@
             </div>
         </nav>
     </div>
+    <% } %>
     <section class="container" id="fullPage">
         <div class="section page">
             <h1><%= surveycat.title %></h1>
             <p class="flow-text"><%- surveycat.description %></p>
+            <% if(surveycat.type === 'carousel') { %>
             <a href="#1" class="waves-effect waves-light btn btn-large">START</a>
+            <% } %>
         </div>
         <% questionList.forEach(function (question, index) { %>
         <% var order = index + 1; %>
@@ -86,35 +90,60 @@
                 <% default: %>
                 <% break; %>
                 <% } %>
+                <% if(surveycat.type === 'carousel') { %>
                 <div class="row">
                     <div class="divider"></div>
                     <br>
                     <div class="col s12">
+                        <% if(order < questionList.length) { %>
                         <% if(order > 1) { %>
                         <a class="waves-effect waves-light btn" href="#<%= order - 1 %>">
                             <i class="material-icons left">arrow_back</i>
                             <span class="btn-text-fix">PREV</span>
                         </a>
                         <% } %>
-                        <% if(order < questionList.length) { %>
                         <a class="waves-effect waves-light btn" href="#<%= order + 1 %>">
                             <i class="material-icons right">arrow_forward</i>
                             <span class="btn-text-fix">NEXT</span>
                         </a>
                         <% } %>
                         <% if(order === questionList.length) { %>
-                        <button class="waves-effect waves-light btn" type="button">
-                            <i class="material-icons right">check</i>
-                            <span class="btn-text-fix">FINISH</span>
-                        </button>
+                        <form action="" method="POST" v-on:submit="submitQuestions" v-ref:form>
+                            <a class="waves-effect waves-light btn" href="#<%= order - 1 %>">
+                                <i class="material-icons left">arrow_back</i>
+                                <span class="btn-text-fix">PREV</span>
+                            </a>
+                            <button class="waves-effect waves-light btn" type="submit">
+                                <i class="material-icons right">check</i>
+                                <span class="btn-text-fix">FINISH</span>
+                            </button>
+                            <input type="hidden" id="questions" name="questions" />
+                        </form>
                         <% } %>
                     </div>
                 </div>
+                <% } %>
             </div>
-            <input type="hidden" name="q<%= index%>-json" value="<%= JSON.stringify(question) %>"/>
+            <input type="hidden" name="q<%= order %>-json" value="<%= JSON.stringify(question) %>"/>
         </div>
         <% }); %>
+        <% if(surveycat.type === 'paper') { %>
+        <div class="row">
+            <div class="divider"></div>
+            <br>
+            <div class="col s12">
+                <form action="" method="POST" v-on:submit="submit" v-ref:form class="center-align">
+                    <button class="waves-effect waves-light btn btn-large" type="submit">
+                        <i class="material-icons right">send</i>
+                        <span class="btn-text-fix">SUBMIT</span>
+                    </button>
+                    <input type="hidden" id="questions" name="questions" />
+                </form>
+            </div>
+        </div>
+        <% } %>
     </section>
+    <input id="type" type="hidden" name="type" value="<%= surveycat.type %>" />
 </div>
 <script type="text/javascript" src="/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="/materialize-css/js/materialize.min.js"></script>

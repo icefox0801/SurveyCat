@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST config page */
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
   var questions = JSON.parse(req.body.questions);
   fs.writeFileSync(path.join(req.surveycat.dir, 'questions.yml'), YAML.stringify(questions, 6, 2));
   res.render('success');

@@ -22,20 +22,30 @@ var Question = Vue.extend({
         self.$set('question.answered', Boolean((self.question.answer) || (self.question.checked.length)));
       }
     }
+  },
+  methods: {
+    'submitQuestions': function () {
+      var self = this;
+      self.$dispatch('submit');
+    }
   }
 });
 
 $(function () {
+  var type = $('#type').val();
 
-  var size = $('.question').size();
-  var anchors = Array.apply(null, { length: size }).map(function(value, index){
-    return (index + 1).toString();
-  });
+  if (type === 'carousel') {
+    var size = $('.question').size();
+    var anchors = Array.apply(null, { length: size }).map(function(value, index) {
+      return (index + 1).toString();
+    });
 
-  $('#fullPage').fullpage({
-    sectionSelector: '.page',
-    anchors: ['index'].concat(anchors)
-  });
+    $('#fullPage').fullpage({
+      sectionSelector: '.page',
+      anchors: ['index'].concat(anchors),
+      recordHistory: false
+    });
+  }
 
   var vm = new Vue({
     el: '#app',
@@ -73,14 +83,34 @@ $(function () {
         }).length;
       }
     },
+    methods: {
+      'submit': function () {
+        var self = this;
+        var questions = self.questionList;
+        questions = questions.map(function (question) {
+          var obj = {};
+          obj.order = question.order;
+          obj.type = question.type;
+
+          if (question.type === 'checkbox') {
+            obj.checked = question.checked || [];
+          } else if (question.type === 'radio') {
+            obj.checked = question.checked || '';
+          } else {
+            obj.answer = question.answer || '';
+          }
+
+          return obj;
+        });
+        $('#questions').val(JSON.stringify(questions));
+      }
+    },
     events: {
       'push': function (question) {
         var self = this;
         self.questionList.push(question);
-      }
-    },
-    components: {
-      'question': Question
+      },
+      'submit': 'submit'
     }
   });
 
