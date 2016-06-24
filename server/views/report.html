@@ -41,7 +41,7 @@
                 <% case 'textarea': %>
                 <ul class="answers" data-collapsible="accordion">
                     <li>
-                        <div class="collapsible-header">共<%= question.answers.length %>个回答（点击展开）：</div>
+                        <div class="collapsible-header"><%= question.answers.length %> answers (click to expand)：</div>
                         <div class="collapsible-body" style="padding: 0 1rem;">
                             <% question.answers.forEach(function (answer, index) { %>
                             <% if(index !== 0) { %>
