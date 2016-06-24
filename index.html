@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Surveycat by icefox0801</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Surveycat</h1>
+      <h2 class="project-tagline">A tool for launch a survey</h2>
+      <a href="https://github.com/icefox0801/SurveyCat" class="btn">View on GitHub</a>
+      <a href="https://github.com/icefox0801/SurveyCat/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/icefox0801/SurveyCat/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="surveycat" class="anchor" href="#surveycat" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SurveyCat</h1>
+
+<p>A tool for launching a survey</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<div class="highlight highlight-source-shell"><pre>npm install surveycat -g</pre></div>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Usage: surveycat [options]</p>
+
+<p>Commands:</p>
+
+<pre><code>init &lt;survey&gt;    init a survey
+config &lt;survey&gt;  config survey questions
+report &lt;survey&gt;  view survey report
+start &lt;survey&gt;   start a survey
+</code></pre>
+
+<p>A tool for launching a survey</p>
+
+<p>Options:</p>
+
+<pre><code>-h, --help  output usage information
+</code></pre>
+
+<h2>
+<a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tutorial</h2>
+
+<p>If you want to launch a survey named <strong>mySurvey</strong>, you can launch it following the steps below:</p>
+
+<h3>
+<a id="1-initialize-the-survey" class="anchor" href="#1-initialize-the-survey" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. Initialize the survey</h3>
+
+<div class="highlight highlight-source-shell"><pre>$ surveycat init mySurvey
+13:31:50 INFO  Initializing a survey
+<span class="pl-k">?</span> title:  mySurvey
+<span class="pl-k">?</span> description:  Please <span class="pl-c1">read</span> and answer the questions below carefully
+<span class="pl-k">?</span> port:  8016
+<span class="pl-k">?</span> <span class="pl-c1">type</span>:  paper
+<span class="pl-k">?</span> start datetime:  2016-06-24 13:31
+<span class="pl-k">?</span> end datetime:  2016-06-25 13:31
+13:32:08 INFO  Finish initializing a survey named mySurvey</pre></div>
+
+<p>Note that:
+1. <code>port</code> is on which you start your survey as a node server
+2. <code>type</code> now support <code>paper</code> and <code>carousel</code>
+3. <code>start datetime</code> and <code>end datetime</code> can accept date format <code>YYYY-MM-DD HH:mm</code>, <code>YYYY-MM-DD</code></p>
+
+<h3>
+<a id="2-config-the-questions-of-the-survey" class="anchor" href="#2-config-the-questions-of-the-survey" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. Config the questions of the survey</h3>
+
+<div class="highlight highlight-source-shell"><pre>$ surveycat config mySurvey</pre></div>
+
+<p>After execute the command, a configuration page will be opened in the browser:
+<img src="https://cloud.githubusercontent.com/assets/3138397/16328924/519f68e6-3a11-11e6-8367-b57e006ebed5.png" alt="image">
+You can config the questions of the survey on this page and then submit them.</p>
+
+<h3>
+<a id="3-start-the-survey" class="anchor" href="#3-start-the-survey" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3. Start the survey</h3>
+
+<div class="highlight highlight-source-shell"><pre>$ surveycat start mySurvey</pre></div>
+
+<p>After execute the command, a survey page will be opened in the browser:
+<img src="https://cloud.githubusercontent.com/assets/3138397/16329015/3e129ea0-3a12-11e6-8377-641b27deac8e.png" alt="image">
+Then you can share the url with you teammates! If <code>http://ipaddress</code> sucks, you can upload the static page to an VPS and modify the submit url manually.</p>
+
+<h3>
+<a id="4-checking-the-survey-report" class="anchor" href="#4-checking-the-survey-report" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>4. Checking the survey report</h3>
+
+<div class="highlight highlight-source-shell"><pre>$ surveycat report mySurvey</pre></div>
+
+<p>After execute the command, a survey report page will be opened in the browser:
+<img src="https://cloud.githubusercontent.com/assets/3138397/16329140/15197478-3a13-11e6-8783-787ba03748a3.png" alt="image"></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/icefox0801/SurveyCat">Surveycat</a> is maintained by <a href="https://github.com/icefox0801">icefox0801</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
