@@ -1,6 +1,9 @@
 # SurveyCat
 A tool for launching a survey
 
+[![Build Status](https://travis-ci.org/icefox0801/SurveyCat.svg?branch=master)](https://travis-ci.org/icefox0801/SurveyCat)
+
+---
 ## Install
 ```sh
 npm install surveycat -g
